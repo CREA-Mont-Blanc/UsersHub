@@ -2,6 +2,8 @@
     Définition du formulaire : création/modification d'un role
 """
 
+import ast
+import json
 from flask_wtf import FlaskForm
 from wtforms import (
     StringField,
@@ -9,7 +11,6 @@ from wtforms import (
     SubmitField,
     HiddenField,
     SelectField,
-    RadioField,
     BooleanField,
     SelectMultipleField,
     TextAreaField,
@@ -17,6 +18,28 @@ from wtforms import (
     validators,
 )
 from wtforms.validators import DataRequired, Email
+
+
+class JSONField(StringField):
+    def _value(self):
+        return self.data if self.data else {}
+
+    def process_formdata(self, valuelist):
+        if valuelist:
+            try:
+                self.data = ast.literal_eval(valuelist[0])
+            except SyntaxError:
+                raise ValueError("This field contains invalid JSON")
+        else:
+            self.data = None
+
+    def pre_validate(self, form):
+        super().pre_validate(form)
+        if self.data:
+            try:
+                json.dumps(self.data)
+            except TypeError:
+                raise ValueError("This field contains invalid JSON")
 
 
 class MultiCheckboxField(SelectMultipleField):
@@ -44,6 +67,7 @@ class Utilisateur(FlaskForm):
     groupe = HiddenField("groupe", default=None)
     remarques = TextAreaField("Commentaire")
     id_role = HiddenField("id")
+    champs_addi = JSONField("Autres")
     submit = SubmitField("Enregistrer")
 
 

@@ -20,6 +20,7 @@ from app.utils.utils_all import strigify_dict
 from app.env import db
 
 
+URL_REDIRECT = current_app.config["URL_REDIRECT"]
 URL_APPLICATION = current_app.config["URL_APPLICATION"]
 
 route = Blueprint("user", __name__)
@@ -56,6 +57,7 @@ def users():
         "Actif",
         "pass_plus",
         "pass_md5",
+        "Autres",
     ]  # noqa
     columns = [
         "id_role",
@@ -68,6 +70,7 @@ def users():
         "active",
         "pass_plus",
         "pass_md5",
+        "champs_addi",
     ]  # noqa
     filters = [{"col": "groupe", "filter": "False"}]
     contents = TRoles.get_all(columns, filters, order_by="identifiant", order="asc")
@@ -326,6 +329,7 @@ def process(form, user, groups):
     form.email.process_data(user["email"])
     form.remarques.process_data(user["remarques"])
     form.identifiant.process_data(user["identifiant"])
+    form.champs_addi.process_data(user["champs_addi"])
     form.a_groupe.process_data(groups)
     return form
 
