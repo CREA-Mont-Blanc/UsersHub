@@ -3,7 +3,7 @@ name: Docker
 on:
   push:
     branches:
-      - develop
+      - feat/add-users-customfields-ui
   release:
     types: [published]
 
