@@ -23,7 +23,7 @@ if [ ! -f config.py ]; then
 fi
 
 cd ..
-
+ 
 # Installation de l'environement python
 
 echo "Installation du virtual env..."
